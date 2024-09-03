@@ -49,9 +49,11 @@ const Meals = () => {
                 {
                     meals?.length > 0 && !error && meals?.map((meal) =>
                         <div className='border mb-10 flex p-2 bg-slate-100 rounded shadow-lg' key={meal.idMeal}>
-                            <Image className='max-w-80 h-auto' src={meal.strMealThumb} alt={meal.strMeal} width={250} height={250}></Image>
+                            <div className='w-1/4'>
+                                <Image className='w-full' src={meal.strMealThumb} alt={meal.strMeal} width={250} height={250}></Image>
+                            </div>
 
-                            <div className='ml-5'>
+                            <div className='ml-5 w-3/4'>
                                 <h2 className='text-2xl font-semibold'>{meal.strMeal}</h2>
                                 <p>{meal?.strInstructions.slice(0, 500)} <Link className='bg-red-400 p-2 block w-1/6 rounded text-center ml-auto text-slate-200 mt-6' href={""}>Read More</Link></p>
                             </div>

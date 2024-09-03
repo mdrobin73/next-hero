@@ -1,4 +1,6 @@
 "use client"
+import { signOut, useSession } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
@@ -6,8 +8,9 @@ import React from 'react';
 const NavBar = () => {
 
     const pathName = usePathname();
-    // console.log(pathName);
     const router = useRouter();
+    const session = useSession();
+    console.log(session);
 
     const links = [
         {
@@ -46,10 +49,15 @@ const NavBar = () => {
             title: "Blogs",
             path: "/blogs"
         },
+        {
+            title: "Test",
+            path: "/test"
+        },
     ]
 
     const handleLogin = () => {
-        router.push("/login");
+        // router.push("/login");
+        router.push("/api/auth/signin");
     };
 
     if (pathName.includes("dashboard")) {
@@ -76,7 +84,23 @@ const NavBar = () => {
                     }
                 </ul>
 
-                <button onClick={handleLogin} className='bg-slate-900 text-slate-200 px-4 py-2 rounded-lg border shadow-md ml-10 border-slate-200 font-normal'>Login</button>
+                {session.status === "authenticated" && <div className='ml-5 text-sm border border-1 p-2 bg-slate-900 text-slate-200 rounded-xl italic'>
+                    <h6>
+                        {session?.data?.user?.name} <br />
+                        {session?.data?.user?.type}
+                    </h6>
+                </div>}
+
+                {session.status === "authenticated" && <div className='ml-1'>
+                    <Image src={session?.data?.user?.image} alt={session?.data?.user?.name} height={"50"} width={"50"} className='rounded-full' />
+                </div>}
+
+                {session.status === "unauthenticated" ? <button onClick={handleLogin} className='bg-slate-900 text-slate-200 px-3 py-2 rounded-lg border shadow-md ml-10 border-slate-200 font-normal text-sm'>Login</button> :
+                    <button onClick={() => { signOut() }} className='bg-slate-900 text-slate-200 px-3 py-2 rounded-lg border shadow-md ml-3 border-slate-200 font-normal text-sm hover:bg-slate-950'>Log out</button>}
+
+                {session.status === "unauthenticated" && <Link href={"api/auth/signup"}>
+                    <button className='bg-slate-900 text-red-400 px-3 py-2 rounded-lg border shadow-md ml-1 border-slate-200 font-normal text-sm hover:bg-slate-950'>Sign Up</button>
+                </Link>}
             </div>
         </nav>
     );
